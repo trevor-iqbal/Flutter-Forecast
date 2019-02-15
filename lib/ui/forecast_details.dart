@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wheatherforecast/data/data_repository.dart';
 
 class Forecast extends StatefulWidget {
   @override
@@ -12,20 +13,32 @@ class _ForecastState extends State<Forecast> {
     return Scaffold(
       body: SafeArea(
         minimum: EdgeInsets.zero,
-             child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(background[0]),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-      )
+             child: 
+             FutureBuilder(
+               future: getDataPoint(),
+               builder:  (BuildContext context, AsyncSnapshot<Map> snapshot){
+                 if(snapshot.hasData){
+                   Map content = snapshot.data;
+                  return Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(background[1]),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+              );
+            }
+            else{
+                return Container();
+            }
+          }
+          )
     ), 
     floatingActionButton: FloatingActionButton(
                   tooltip: "Add Item",
                   backgroundColor:  Colors.black,
                     child : Icon(Icons.my_location),
-                    onPressed: (){}),
+                    onPressed: (){ Future<Map> temp = getDataPoint();}),
     );
   }
 }
