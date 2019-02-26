@@ -3,10 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wheatherforecast/ui/forecast_details.dart';
+import 'package:wheatherforecast/util/util.dart' as util;
 
 //https://dribbble.com/shots/2332668-Lonely-Mountain-Weather-Concept?utm_source=Clipboard_Shot&utm_campaign=Marina_Matijaca&utm_content=Lonely%20Mountain%20Weather%20Concept&utm_medium=Social_Share
 Map content;
-String UNITS = "si"; //Default Celcious
 String BACKGROUND = background[2];
 List<String> background = ['assets/background/day-image.png', 'assets/background/night-image.png', 'assets/background/sunset-image.png'];
 
@@ -18,14 +18,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  
+  String _latEntered, _longEntered;
   @override
   Widget build(BuildContext context) {
      return Scaffold(
         body: SafeArea(
            minimum: EdgeInsets.zero,
-             child: FutureBuilder(
-               future: getDataPoint(),
+             child: getFutureBuilder(),
+      )
+    );
+  }
+  Future _goToNextScreen (BuildContext context) async{
+      Map results = await Navigator.of(context).push(
+        new MaterialPageRoute<Map>(
+          builder: (BuildContext context){
+            return Forecast();
+          }
+        )
+      );
+      if(results != null && results.containsKey('lat')){
+          _latEntered = results['lat'];
+      }
+      if(results != null && results.containsKey('long')){
+          _longEntered = results['long'];
+      }
+  }
+  Widget getFutureBuilder(){
+    return FutureBuilder(
+               future: getDataPoint(_latEntered == null ? util.LAT :_latEntered, _longEntered == null ? util.LONG :_longEntered, util.UNITS),
                builder: (BuildContext context, AsyncSnapshot<Map> snapshot){
                  if(snapshot.hasData){
                     content = snapshot.data;
@@ -47,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
-                              IconButton(icon: Icon(Icons.add, color: Colors.white, size: 35.0), onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: (context) { return Forecast();})); },)
+                              IconButton(icon: Icon(Icons.add, color: Colors.white, size: 35.0), onPressed: (){ _goToNextScreen(context);})//Navigator.push(context, MaterialPageRoute(builder: (context) { return Forecast();})); },)
                             ],
                           ),
                           Column(
@@ -62,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Row( 
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
                                   Image.asset("assets/icon/${content['currently']['icon']}.png"),
                                   Text(content["currently"]["temperature"].toString()+"°", style: TextStyle(color: Colors.white, fontSize: 110.0, letterSpacing: -10.0, fontWeight: FontWeight.w200)),
@@ -70,7 +90,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ],
                           ),
-                          Padding(padding: EdgeInsets.all(45.0),),
+                        Padding(padding: EdgeInsets.all(45.0)),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[///
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
@@ -96,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       height: 95.0, width: 95.0,
                                       child: Column(
                                         children: <Widget>[
-                                          Image.asset('assets/icon/weather_download_07.png', width: 50.0, height: 50.0),
+                                          Image.asset('assets/icon/wind.png', width: 50.0, height: 50.0),
                                           Text(content['currently']['windSpeed'].toString()+" mph", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
                                           Text('Wind', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300)),                                  
                                           ],
@@ -112,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       child: Column(
                                         children: <Widget>[
                                           Image.asset('assets/icon/visibility-icon.png', width: 50.0, height: 50.0, color: Colors.white),
-                                          Text(content['currently']['visibility'].toString()+" km", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
+                                          Text(content['currently']['visibility'].toString().substring(0,1)+" km", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
                                           Text('Visibility', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300))
                                         ],
                                       ),
@@ -147,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       child: Column(
                                         children: <Widget>[
                                           Image.asset('assets/icon/pressure-icon.png', width: 50.0, height: 50.0, color: Colors.white),
-                                          Text(content['currently']['pressure'].toString()+" psi", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
+                                          Text(content['currently']['pressure'].toString().substring(0,4)+" psi", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
                                           Text('Pressure', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300))
                                         ],
                                       ),
@@ -171,6 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ), ),
                             ],
                           )
+                          ])///
                         ],
                       )
                    );
@@ -181,16 +205,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                  }
                }
-             )
-      )
-    );
+             );
   }
 }
 
-Future<Map> getDataPoint() async{
-  String apiUrl ="https://api.darksky.net/forecast/97fffd1b9727d10dec8566dc63d34fc7/31.49,74.30?units=$UNITS";
+Future<Map> getDataPoint(String lat, String long, String units) async{
+  String apiUrl ="https://api.darksky.net/forecast/${util.APIKEY}/$lat,$long?units=$units";
   http.Response response = await http.get(apiUrl);
   var data = json.decode(response.body);
+ // print(data+ " \n");
   return data;
 }
 // String backgroundSelecter(){
