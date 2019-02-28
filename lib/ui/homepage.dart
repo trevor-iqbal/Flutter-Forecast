@@ -49,8 +49,9 @@ class _MyHomePageState extends State<MyHomePage> {
                builder: (BuildContext context, AsyncSnapshot<Map> snapshot){
                  if(snapshot.hasData){
                     content = snapshot.data;
-                    var format = DateFormat.jm("en_US");
-                    var _date = format.format(
+                    var formatPrimary =  DateFormat.d("en_US").add_E();
+                    var formatSecondary =  DateFormat.jm("en_US");
+                    var _date = formatSecondary.format(
                         DateTime.fromMillisecondsSinceEpoch(
                             content["currently"]["time"] * 1000,
                             isUtc: true) ?? ['null']);
@@ -67,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
-                              IconButton(icon: Icon(Icons.add, color: Colors.white, size: 35.0), onPressed: (){ _goToNextScreen(context);})//Navigator.push(context, MaterialPageRoute(builder: (context) { return Forecast();})); },)
+                              IconButton(icon: Icon(Icons.insert_chart, color: Colors.white, size: 35.0), onPressed: (){ _goToNextScreen(context);})//Navigator.push(context, MaterialPageRoute(builder: (context) { return Forecast();})); },)
                             ],
                           ),
                           Column(
@@ -90,111 +91,113 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ],
                           ),
-                        Padding(padding: EdgeInsets.all(45.0)),
+                        Padding(padding: EdgeInsets.all(70.0)),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[///
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Card(color: Colors.transparent,
-                              child: Column(
-                                children: <Widget>[
-                                    SizedBox(
-                                      height: 95.0, width: 95.0,
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(padding: EdgeInsets.fromLTRB(0,10.0,0,0)),
+                                Card(color: Colors.transparent,
                                       child: Column(
                                         children: <Widget>[
-                                          Image.asset('assets/icon/weather_download_30.png', width: 50.0, height: 50.0),
-                                          Text(content['currently']['humidity'].toString()+"g/m3", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
-                                          Text('Humidity', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,))
+                                            SizedBox(
+                                              height: 135.0, width: 80.0,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Text(formatPrimary.format(
+                                                      DateTime.fromMillisecondsSinceEpoch(
+                                                          content["daily"]["data"][0]["time"] * 1000,
+                                                          isUtc: true) ?? ['null']), style: TextStyle(color: Colors.white, fontSize: 20.0)),
+                                                  Image.asset('assets/icon/${content["daily"]["data"][0]["icon"]}.png', width: 47.0, height: 47.0),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: <Widget>[
+                                                        Text(content["daily"]["data"][0]["temperatureMax"].toString().substring(0,2)+"°/", style: TextStyle(color: Colors.white, fontSize: 14.0)),
+                                                        Text(content["daily"]["data"][0]["temperatureMin"].toString().substring(0,1)+"°", style: TextStyle(color: Colors.white, fontSize: 13.0))
+                                                    ])                              
+                                                  ],
+                                              ),
+                                            ),
                                         ],
-                                      ),
-                                    ),
-                                ],
-                              ), ),
-                              Card(color: Colors.transparent,
-                              child: Column(
-                                children: <Widget>[
-                                    SizedBox(
-                                      height: 95.0, width: 95.0,
+                                      ), ),
+                                Card(color: Colors.transparent,
                                       child: Column(
                                         children: <Widget>[
-                                          Image.asset('assets/icon/wind.png', width: 50.0, height: 50.0),
-                                          Text(content['currently']['windSpeed'].toString()+" mph", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
-                                          Text('Wind', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300)),                                  
-                                          ],
-                                      ),
-                                    ),
-                                ],
-                              ), ),
-                              Card(color: Colors.transparent,
-                              child: Column(
-                                children: <Widget>[
-                                    SizedBox(
-                                      height: 95.0, width: 95.0,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Image.asset('assets/icon/visibility-icon.png', width: 50.0, height: 50.0, color: Colors.white),
-                                          Text(content['currently']['visibility'].toString().substring(0,1)+" km", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
-                                          Text('Visibility', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300))
+                                            SizedBox(
+                                              height: 135.0, width: 80.0,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Text(formatPrimary.format(
+                                                      DateTime.fromMillisecondsSinceEpoch(
+                                                          content["daily"]["data"][1]["time"] * 1000,
+                                                          isUtc: true) ?? ['null']), style: TextStyle(color: Colors.white, fontSize: 20.0)),
+                                                  Image.asset('assets/icon/${content["daily"]["data"][1]["icon"]}.png', width: 47.0, height: 47.0),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: <Widget>[
+                                                        Text(content["daily"]["data"][1]["temperatureMax"].toString().substring(0,2)+"°/", style: TextStyle(color: Colors.white, fontSize: 14.0)),
+                                                        Text(content["daily"]["data"][1]["temperatureMin"].toString().substring(0,1)+"°", style: TextStyle(color: Colors.white, fontSize: 12.0))
+                                                    ])                              
+                                                  ],
+                                              ),
+                                            ),
                                         ],
-                                      ),
-                                    ),
-                                ],
-                              ), ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Card(color: Colors.transparent,
-                              child: Column(
-                                children: <Widget>[
-                                    SizedBox(
-                                      height: 95.0, width: 95.0,
+                                      ), ),
+                                Card(color: Colors.transparent,
                                       child: Column(
                                         children: <Widget>[
-                                          Image.asset('assets/icon/dew-point-icon.png', width: 50.0, height: 50.0, color: Colors.white),
-                                          Text(content['currently']['dewPoint'].toString()+"°", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
-                                          Text('Dew Point', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300))
+                                            SizedBox(
+                                              height: 135.0, width: 80.0,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Text(formatPrimary.format(
+                                                      DateTime.fromMillisecondsSinceEpoch(
+                                                          content["daily"]["data"][2]["time"] * 1000,
+                                                          isUtc: true) ?? ['null']), style: TextStyle(color: Colors.white, fontSize: 20.0)),
+                                                  Image.asset('assets/icon/${content["daily"]["data"][2]["icon"]}.png', width: 47.0, height: 47.0),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: <Widget>[
+                                                        Text(content["daily"]["data"][2]["temperatureMax"].toString().substring(0,2)+"°/", style: TextStyle(color: Colors.white, fontSize: 14.0)),
+                                                        Text(content["daily"]["data"][2]["temperatureMin"].toString().substring(0,1)+"°", style: TextStyle(color: Colors.white, fontSize: 12.0))
+                                                    ])                              
+                                                  ],
+                                              ),
+                                            ),
                                         ],
-                                      ),
-                                    ),
-                                ],
-                              ), ),
-                              Card(color: Colors.transparent,
-                              child: Column(
-                                children: <Widget>[
-                                    SizedBox(
-                                      height: 95.0, width: 95.0,
+                                      ), ),
+                                Card(color: Colors.transparent,
                                       child: Column(
                                         children: <Widget>[
-                                          Image.asset('assets/icon/pressure-icon.png', width: 50.0, height: 50.0, color: Colors.white),
-                                          Text(content['currently']['pressure'].toString().substring(0,4)+" psi", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
-                                          Text('Pressure', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300))
+                                            SizedBox(
+                                              height: 135.0, width: 80.0,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Text(formatPrimary.format(
+                                                      DateTime.fromMillisecondsSinceEpoch(
+                                                          content["daily"]["data"][3]["time"] * 1000,
+                                                          isUtc: true) ?? ['null']), style: TextStyle(color: Colors.white, fontSize: 20.0)),
+                                                  Image.asset('assets/icon/${content["daily"]["data"][3]["icon"]}.png', width: 47.0, height: 47.0),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: <Widget>[
+                                                        Text(content["daily"]["data"][3]["temperatureMax"].toString().substring(0,2)+"°/", style: TextStyle(color: Colors.white, fontSize: 14.0)),
+                                                        Text(content["daily"]["data"][3]["temperatureMin"].toString().substring(0,1)+"°", style: TextStyle(color: Colors.white, fontSize: 12.0))
+                                                    ])                              
+                                                  ],
+                                              ),
+                                            ),
                                         ],
-                                      ),
-                                    ),
-                                ],
-                              ), ),
-                              Card(color: Colors.transparent,
-                              child: Column(
-                                children: <Widget>[
-                                    SizedBox(
-                                      height: 95.0, width: 95.0,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Image.asset('assets/icon/uv-index-icon.png', width: 50.0, height: 50.0, color: Colors.white),
-                                          Text(content['currently']['uvIndex'].toString()+" mW", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
-                                          Text('UV Index', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300))
-                                        ],
-                                      ),
-                                    ),
-                                ],
-                              ), ),
-                            ],
-                          )
-                          ])///
+                                      ), )
+                              ],
+                            ),
+                          ])
                         ],
                       )
                    );
@@ -213,7 +216,6 @@ Future<Map> getDataPoint(String lat, String long, String units) async{
   String apiUrl ="https://api.darksky.net/forecast/${util.APIKEY}/$lat,$long?units=$units";
   http.Response response = await http.get(apiUrl);
   var data = json.decode(response.body);
- // print(data+ " \n");
   return data;
 }
 // String backgroundSelecter(){

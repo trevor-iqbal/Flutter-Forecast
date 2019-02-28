@@ -13,7 +13,7 @@ class Forecast extends StatefulWidget {
 class _ForecastState extends State<Forecast> {
 
   List<String> background = ['assets/background/day-image.png', 'assets/background/night-image.png', 'assets/background/sunset-image.png'];
-  var format = DateFormat.d("en_US").add_E();
+  var format = DateFormat.jm("en_US");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,159 +31,173 @@ class _ForecastState extends State<Forecast> {
                     Column( 
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                      IconButton(icon: Icon(Icons.arrow_back, color: Colors.white, size: 35.0), onPressed: (){ Navigator.pop(context);}),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        TimeSeriesChart(_getForecastData())
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                      MaterialButton( child: Image.asset('assets/icon/weather_download_34.png', width: 45.0, height: 45.0), onPressed: (){setToCelsius();}),
-                      MaterialButton( child: Image.asset('assets/icon/weather_download_32.png', width: 45.0, height: 45.0), onPressed: (){setToFahrenheit();}),
-                       ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Padding(padding: EdgeInsets.fromLTRB(0,10.0,0,0)),
-                        Card(color: Colors.transparent,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                          IconButton(icon: Icon(Icons.arrow_back, color: Colors.white, size: 32.0), onPressed: (){ Navigator.pop(context);}),
+                          ],
+                        ),
+                        SafeArea(
+                          minimum: EdgeInsets.fromLTRB(0, 0, 0, 10.0),
+                          child:
+                            Container(
+                              height: 190.0,
+                              width: 550.0,
+                              color: Colors.transparent,
+                              child:
+                        TimeSeriesChart(_getForecastData()))),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                            Tooltip(
+                            message: 'Changed To Celsius',
+                            child: MaterialButton( child: Image.asset('assets/icon/weather_download_34.png', width: 45.0, height: 45.0), onPressed: (){setToCelsius();})),
+                            Tooltip(
+                            message: 'Changed To Fahrenheit',
+                            child: MaterialButton( child: Image.asset('assets/icon/weather_download_32.png', width: 45.0, height: 45.0), onPressed: (){setToFahrenheit();})),
+                            ],
+                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text('Day Details', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w300)),
+                            ],
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Card(color: Colors.transparent,
                               child: Column(
                                 children: <Widget>[
                                     SizedBox(
-                                      height: 135.0, width: 80.0,
+                                      height: 95.0, width: 95.0,
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
-                                          Text(format.format(
-                                              DateTime.fromMillisecondsSinceEpoch(
-                                                  content["daily"]["data"][0]["time"] * 1000,
-                                                  isUtc: true) ?? ['null']), style: TextStyle(color: Colors.white, fontSize: 20.0)),
-                                          Image.asset('assets/icon/${content["daily"]["data"][0]["icon"]}.png', width: 47.0, height: 47.0),
-                                          Row(
-                                             mainAxisAlignment: MainAxisAlignment.center,
-                                             children: <Widget>[
-                                                Text(content["daily"]["data"][0]["temperatureMax"].toString().substring(0,2)+"°/", style: TextStyle(color: Colors.white, fontSize: 14.0)),
-                                                Text(content["daily"]["data"][0]["temperatureMin"].toString().substring(0,1)+"°", style: TextStyle(color: Colors.white, fontSize: 13.0))
-                                             ])                              
+                                          Image.asset('assets/icon/weather_download_30.png', width: 50.0, height: 50.0),
+                                          Text(content['currently']['humidity'].toString()+"g/m3", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
+                                          Text('Humidity', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,))
+                                        ],
+                                      ),
+                                    ),
+                                ],
+                              ), ),
+                              Card(color: Colors.transparent,
+                              child: Column(
+                                children: <Widget>[
+                                    SizedBox(
+                                      height: 95.0, width: 95.0,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Image.asset('assets/icon/wind.png', width: 50.0, height: 50.0),
+                                          Text(content['currently']['windSpeed'].toString()+" mph", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
+                                          Text('Wind', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300)),                                  
                                           ],
                                       ),
                                     ),
                                 ],
                               ), ),
-                        Card(color: Colors.transparent,
+                              Card(color: Colors.transparent,
                               child: Column(
                                 children: <Widget>[
                                     SizedBox(
-                                      height: 135.0, width: 80.0,
+                                      height: 95.0, width: 95.0,
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
-                                          Text(format.format(
-                                              DateTime.fromMillisecondsSinceEpoch(
-                                                  content["daily"]["data"][1]["time"] * 1000,
-                                                  isUtc: true) ?? ['null']), style: TextStyle(color: Colors.white, fontSize: 20.0)),
-                                          Image.asset('assets/icon/${content["daily"]["data"][1]["icon"]}.png', width: 47.0, height: 47.0),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                             children: <Widget>[
-                                                Text(content["daily"]["data"][1]["temperatureMax"].toString().substring(0,2)+"°/", style: TextStyle(color: Colors.white, fontSize: 14.0)),
-                                                Text(content["daily"]["data"][1]["temperatureMin"].toString().substring(0,1)+"°", style: TextStyle(color: Colors.white, fontSize: 12.0))
-                                             ])                              
-                                          ],
+                                          Image.asset('assets/icon/visibility-icon.png', width: 50.0, height: 50.0, color: Colors.white),
+                                          Text(content['currently']['visibility'].toString().substring(0,1)+" km", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
+                                          Text('Visibility', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300))
+                                        ],
                                       ),
                                     ),
                                 ],
                               ), ),
-                        Card(color: Colors.transparent,
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Card(color: Colors.transparent,
                               child: Column(
                                 children: <Widget>[
                                     SizedBox(
-                                      height: 135.0, width: 80.0,
+                                      height: 95.0, width: 95.0,
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
-                                          Text(format.format(
-                                              DateTime.fromMillisecondsSinceEpoch(
-                                                  content["daily"]["data"][2]["time"] * 1000,
-                                                  isUtc: true) ?? ['null']), style: TextStyle(color: Colors.white, fontSize: 20.0)),
-                                          Image.asset('assets/icon/${content["daily"]["data"][2]["icon"]}.png', width: 47.0, height: 47.0),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                             children: <Widget>[
-                                                Text(content["daily"]["data"][2]["temperatureMax"].toString().substring(0,2)+"°/", style: TextStyle(color: Colors.white, fontSize: 14.0)),
-                                                Text(content["daily"]["data"][2]["temperatureMin"].toString().substring(0,1)+"°", style: TextStyle(color: Colors.white, fontSize: 12.0))
-                                             ])                              
-                                          ],
+                                          Image.asset('assets/icon/dew-point-icon.png', width: 50.0, height: 50.0, color: Colors.white),
+                                          Text(content['currently']['dewPoint'].toString()+"°", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
+                                          Text('Dew Point', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300))
+                                        ],
                                       ),
                                     ),
                                 ],
                               ), ),
-                         Card(color: Colors.transparent,
+                              Card(color: Colors.transparent,
                               child: Column(
                                 children: <Widget>[
                                     SizedBox(
-                                      height: 135.0, width: 80.0,
+                                      height: 95.0, width: 95.0,
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
-                                          Text(format.format(
-                                              DateTime.fromMillisecondsSinceEpoch(
-                                                  content["daily"]["data"][3]["time"] * 1000,
-                                                  isUtc: true) ?? ['null']), style: TextStyle(color: Colors.white, fontSize: 20.0)),
-                                          Image.asset('assets/icon/${content["daily"]["data"][3]["icon"]}.png', width: 47.0, height: 47.0),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                             children: <Widget>[
-                                                Text(content["daily"]["data"][3]["temperatureMax"].toString().substring(0,2)+"°/", style: TextStyle(color: Colors.white, fontSize: 14.0)),
-                                                Text(content["daily"]["data"][3]["temperatureMin"].toString().substring(0,1)+"°", style: TextStyle(color: Colors.white, fontSize: 12.0))
-                                             ])                              
-                                          ],
+                                          Image.asset('assets/icon/pressure-icon.png', width: 50.0, height: 50.0, color: Colors.white),
+                                          Text(content['currently']['pressure'].toString().substring(0,4)+" psi", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
+                                          Text('Pressure', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300))
+                                        ],
                                       ),
                                     ),
                                 ],
-                              ), )
-
-                      ],
-                    ),
+                              ), ),
+                              Card(color: Colors.transparent,
+                              child: Column(
+                                children: <Widget>[
+                                    SizedBox(
+                                      height: 95.0, width: 95.0,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Image.asset('assets/icon/uv-index-icon.png', width: 50.0, height: 50.0, color: Colors.white),
+                                          Text(content['currently']['uvIndex'].toString()+" mW", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300,)),
+                                          Text('UV Index', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300))
+                                        ],
+                                      ),
+                                    ),
+                                ],
+                              ), ),
+                            ],
+                          ),
                   ]
                 )
               )
     ), 
-    floatingActionButton: FloatingActionButton(
-                  tooltip: "Add Location",
-                  backgroundColor:  Colors.black,
-                    child : Icon(Icons.my_location),
-                    onPressed: _windowOnTapping,
-    ));
-  }
+    // floatingActionButton: FloatingActionButton(
+    //               tooltip: "Add Location",
+    //               backgroundColor:  Colors.black,
+    //                 child : Icon(Icons.my_location),
+    //                 onPressed: _windowOnTapping,
+    // ));
+    );}
   
 List<charts.Series<TimeSeriesTemperature, DateTime>> _getForecastData() {
-  var year = DateFormat.y("en_US");
-  var month = DateFormat.m("en_US").add_E();
-  var day = DateFormat.d("en_US").add_E();
-  List<TimeSeriesTemperature> data;
-  for(int c = 0; c < 17; c++){
-    // data.insert(c,
-    //   TimeSeriesTemperature( 
-    //     DateTime((year.format(DateTime.fromMillisecondsSinceEpoch(int.parse(content['hourly']['data'][c]['time']) * 1000)) ?? ['null'],
-    //              month.format(DateTime.fromMilllisecondsSinceEpoch(int.parse(content['hourly']['data'][c]['time']) * 1000)) ?? ['null'],
-    //              day.format(DateTime.fromMilllisecondsSinceEpoch(int.parse(content['hourly']['data'][c]['time']) * 1000)) ?? ['null']),
-    //              content['hourly']['data'][c]['temperature'])));
-  }
-
+  var format = DateFormat.yMd().add_jm();
+  List<TimeSeriesTemperature> data = new List<TimeSeriesTemperature>(6);
+  for(int c = 0; c <= 5; c++){
+    var dateFormat = format.format(DateTime.fromMillisecondsSinceEpoch(
+                            content['hourly']['data'][c]['time'] * 1000,
+                            isUtc: true) ?? ['null']);
+    var date = DateTime(int.parse(dateFormat.substring(5,9)),
+                        int.parse(dateFormat.substring(2,4)),
+                        int.parse(dateFormat.substring(0,1)),
+                        int.parse(dateFormat.substring(10,11)),0);
+    print(dateFormat);
+    var timeSeries = TimeSeriesTemperature(date, content['hourly']['data'][c]['temperature']+0.0);
+    data[c] = timeSeries;
+   }
   return [
     charts.Series<TimeSeriesTemperature, DateTime>( 
       id: 'Hourly',
-      colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+      colorFn: (_, __) => charts.MaterialPalette.white,
       domainFn: (TimeSeriesTemperature temperature, _) => temperature.time,
       measureFn: (TimeSeriesTemperature temperature, _) => temperature.temperature,
       data: data,
+      areaColorFn: (_,__) => charts.MaterialPalette.white,
     )
   ];
 }
@@ -220,10 +234,10 @@ List<charts.Series<TimeSeriesTemperature, DateTime>> _getForecastData() {
       );
        showDialog(context: context, builder: (_){ return alert; });
       }
-  void changeLocation(String LAT, String LONG){
+  void changeLocation(String lAT, String lONG){
     // setLAT(LAT);
     // setLONG(LONG);
-    Navigator.pop(context,{ 'lat' : LAT, 'long' : LONG});
-    print (LAT + ", "+LONG+"--------");
+    Navigator.pop(context,{ 'lat' : lAT, 'long' : lONG});
+    print (lAT + ", "+lONG+"--------");
   }
 }

@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
+
 class TimeSeriesChart extends StatelessWidget {
   final List<charts.Series> seriesList;
   final bool animate;
 
   TimeSeriesChart(this.seriesList, {this.animate});
-  // factory TimeSeriesChart.withSampleData() {
-  //   return TimeSeriesChart(
-  //     _getForecastData(),
-  //     animate: false,
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +14,33 @@ class TimeSeriesChart extends StatelessWidget {
       seriesList,
       animate: animate,
       dateTimeFactory: const charts.LocalDateTimeFactory(),
+       domainAxis: charts.DateTimeAxisSpec(
+            renderSpec: charts.GridlineRendererSpec(
+              axisLineStyle: charts.LineStyleSpec(
+                color: charts.MaterialPalette.white, // this also doesn't change the Y axis labels
+              ),
+              labelStyle: charts.TextStyleSpec(
+                fontSize: 12,
+                color: charts.MaterialPalette.white,
+              )
+            ),
+            tickFormatterSpec: charts.AutoDateTimeTickFormatterSpec(
+              hour: charts.TimeFormatterSpec(
+                  format: 'hh',
+                  transitionFormat: 'jm',
+              ))),
+       primaryMeasureAxis: charts.NumericAxisSpec(
+            renderSpec: charts.GridlineRendererSpec(
+                labelStyle: charts.TextStyleSpec(
+                    fontSize: 12, color: charts.MaterialPalette.white),
+                lineStyle: charts.LineStyleSpec(
+                    thickness: 1,
+                    color: charts.MaterialPalette.white))),
     );
   }
 }
 class TimeSeriesTemperature {
   final DateTime time;
-  final int temperature;
+  final double temperature;
   TimeSeriesTemperature(this.time, this.temperature);
 }
