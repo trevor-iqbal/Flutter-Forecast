@@ -12,7 +12,6 @@ class Forecast extends StatefulWidget {
 
 class _ForecastState extends State<Forecast> {
 
-  List<String> background = ['assets/background/day-image.png', 'assets/background/night-image.png', 'assets/background/sunset-image.png'];
   var format = DateFormat.jm("en_US");
   @override
   Widget build(BuildContext context) {
@@ -163,17 +162,11 @@ class _ForecastState extends State<Forecast> {
                               ), ),
                             ],
                           ),
-                  ]
-                )
-              )
-    ), 
-    // floatingActionButton: FloatingActionButton(
-    //               tooltip: "Add Location",
-    //               backgroundColor:  Colors.black,
-    //                 child : Icon(Icons.my_location),
-    //                 onPressed: _windowOnTapping,
-    // ));
-    );}
+                        ]
+                      )
+                    )
+                  )
+              );}
   
 List<charts.Series<TimeSeriesTemperature, DateTime>> _getForecastData() {
   var format = DateFormat.yMd().add_jm();
@@ -182,10 +175,11 @@ List<charts.Series<TimeSeriesTemperature, DateTime>> _getForecastData() {
     var dateFormat = format.format(DateTime.fromMillisecondsSinceEpoch(
                             content['hourly']['data'][c]['time'] * 1000,
                             isUtc: true) ?? ['null']);
-    var date = DateTime(int.parse(dateFormat.substring(5,9)),
-                        int.parse(dateFormat.substring(2,4)),
-                        int.parse(dateFormat.substring(0,1)),
-                        int.parse(dateFormat.substring(10,11)),0);
+    var date = DateTime(
+                         int.parse(dateFormat.substring(5,9)),
+                         int.parse(dateFormat.substring(2,3)),
+                         int.parse(dateFormat.substring(0,1)),
+                         int.parse(dateFormat.substring(9,10)),0);
     print(dateFormat);
     var timeSeries = TimeSeriesTemperature(date, content['hourly']['data'][c]['temperature']+0.0);
     data[c] = timeSeries;

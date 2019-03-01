@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:wheatherforecast/ui/forecast_details.dart';
 import 'package:wheatherforecast/util/util.dart' as util;
 
-//https://dribbble.com/shots/2332668-Lonely-Mountain-Weather-Concept?utm_source=Clipboard_Shot&utm_campaign=Marina_Matijaca&utm_content=Lonely%20Mountain%20Weather%20Concept&utm_medium=Social_Share
 Map content;
 String BACKGROUND = background[2];
 List<String> background = ['assets/background/day-image.png', 'assets/background/night-image.png', 'assets/background/sunset-image.png'];
@@ -19,6 +18,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String _latEntered, _longEntered;
+  var _date;
   @override
   Widget build(BuildContext context) {
      return Scaffold(
@@ -43,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _longEntered = results['long'];
       }
   }
+
   Widget getFutureBuilder(){
     return FutureBuilder(
                future: getDataPoint(_latEntered == null ? util.LAT :_latEntered, _longEntered == null ? util.LONG :_longEntered, util.UNITS),
@@ -51,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     content = snapshot.data;
                     var formatPrimary =  DateFormat.d("en_US").add_E();
                     var formatSecondary =  DateFormat.jm("en_US");
-                    var _date = formatSecondary.format(
+                    _date = formatSecondary.format(
                         DateTime.fromMillisecondsSinceEpoch(
                             content["currently"]["time"] * 1000,
                             isUtc: true) ?? ['null']);
@@ -68,15 +69,15 @@ class _MyHomePageState extends State<MyHomePage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
-                              IconButton(icon: Icon(Icons.insert_chart, color: Colors.white, size: 35.0), onPressed: (){ _goToNextScreen(context);})//Navigator.push(context, MaterialPageRoute(builder: (context) { return Forecast();})); },)
+                              IconButton(icon: Icon(Icons.insert_chart, color: Colors.white, size: 35.0), onPressed: (){ _goToNextScreen(context);})
                             ],
                           ),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text(content["timezone"].toString(), style: TextStyle(color: Colors.white, fontSize: 28.0, fontWeight: FontWeight.w300)),
+                              Text(content["timezone"].toString(), style: TextStyle(color: Colors.white, fontSize: 30.0, fontWeight: FontWeight.w300)),
                               Text( content["currently"]["summary"].toString(), style: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w300)),
-                              Text( "Updated as of "+_date, style: TextStyle(color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.w300)),
+                              Text( "Updated as of "+ _date, style: TextStyle(color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.w300)),
                             ],
                           ),
                           Row(
@@ -103,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       child: Column(
                                         children: <Widget>[
                                             SizedBox(
-                                              height: 135.0, width: 80.0,
+                                              height: 137.0, width: 80.0,
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: <Widget>[
@@ -127,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       child: Column(
                                         children: <Widget>[
                                             SizedBox(
-                                              height: 135.0, width: 80.0,
+                                              height: 137.0, width: 80.0,
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: <Widget>[
@@ -151,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       child: Column(
                                         children: <Widget>[
                                             SizedBox(
-                                              height: 135.0, width: 80.0,
+                                              height: 137.0, width: 80.0,
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: <Widget>[
@@ -175,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       child: Column(
                                         children: <Widget>[
                                             SizedBox(
-                                              height: 135.0, width: 80.0,
+                                              height: 137.0, width: 80.0,
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: <Widget>[
@@ -218,16 +219,3 @@ Future<Map> getDataPoint(String lat, String long, String units) async{
   var data = json.decode(response.body);
   return data;
 }
-// String backgroundSelecter(){
-//   var format = DateFormat.jm("en_US");
-//   var _date = format.format(
-//       DateTime.fromMillisecondsSinceEpoch(
-//           content["currently"]["time"] * 1000,
-//           isUtc: true) ?? ['null']);
-//   var entity = DateTime.fromMillisecondsSinceEpoch(
-//           content["currently"]["time"] * 1000,
-//           isUtc: true) ?? ['null'];
-//   if(compareTo(entity)){
-
-//   }
-// }
